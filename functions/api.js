@@ -1,9 +1,13 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const serverless = require('serverless-http');
+const app = express();
 const router = express.Router();
+
 const Game = require('./models/game');
 
 router.get('/', (req, res) => {
-    console.log('/ route called');
+    console.log('/api route called');
     res.send('<h1>Welcome to my Api, these are the available routes:</h1>')
 });
 
@@ -37,4 +41,6 @@ router.get('/games/:title', async (req, res) => {
     }
 });
 
-module.exports = router;
+app.use('/.netlify/functions/api', router);
+mongoose.connect(process.env.CONNECTIONSTRING, {useNewUrlParser: true, useUnifiedTopology: true})
+module.exports.handler = serverless(app);
